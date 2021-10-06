@@ -1,21 +1,15 @@
 import java.io.File;
+import java.util.concurrent.ForkJoinPool;
 
 public class Main {
     public static void main(String[] args) {
         String folderPath = "C:\\Users\\Nivel\\Desktop\\Разное";
         File file = new File(folderPath);
-        System.out.println(getFolderSize(file));
-    }
+        Node root = new Node(file);
 
-    public static long getFolderSize(File file) {
-        if (file.isFile()) {
-            return file.length();
-        }
-        long sum = 0;
-        File[] files = file.listFiles();
-        for (File f : files) {
-            sum += getFolderSize(f);
-        }
-        return sum;
+        FolderSizeCalculator calculator = new FolderSizeCalculator(root);
+        ForkJoinPool pool = new ForkJoinPool();
+        pool.invoke(calculator);
+        System.out.println(root);
     }
 }
